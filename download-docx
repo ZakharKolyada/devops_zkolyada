@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# File download URL
+file_url="https://jsoncompare.org/LearningContainer/SampleFiles/DOCX/15-MB-docx-file-download.docx"
+
+# Name for file copies
+base_name="docx_copy"
+
+# Number of copies
+num_copies=10000
+
+# Loop for downloading files
+for ((i=1; i<=num_copies; i++)); do
+    copy_name="${base_name}${i}.docx"
+    curl -o "$copy_name" "$file_url"
+done
+
+echo "Files downloaded:"
+ls *.docx
