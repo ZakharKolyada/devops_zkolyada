@@ -105,9 +105,9 @@ resource "azurerm_linux_virtual_machine" "vm" {
   
 # Указываем путь к приватному ключу
   disable_password_authentication = true
-  ssh_keys {
-    path     = "/Users/zakharkolyada/zkolyada.pub"  # Путь к публичному ключу
-    username = "adminuser"  # Имя пользователя для SSH
+  admin_ssh_key {
+    username   = "adminuser"  # Имя пользователя для подключения
+    public_key = file("/Users/zakharkolyada/zkolyada.pub")  # Чтение публичного ключа из файла
   }
   
   
