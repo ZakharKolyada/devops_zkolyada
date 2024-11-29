@@ -101,10 +101,15 @@ resource "azurerm_linux_virtual_machine" "vm" {
   resource_group_name   = azurerm_resource_group.rg.name
   size                  = "Standard_B1s"
   admin_username        = "adminuser"
-  admin_password = "YourSecurePassword123!"
   network_interface_ids = [azurerm_network_interface.nic[count.index].id]
   
-  disable_password_authentication = false
+# Указываем путь к приватному ключу
+  disable_password_authentication = true
+  ssh_keys {
+    path     = "/Users/zakharkolyada/zkolyada.pub"  # Путь к публичному ключу
+    username = "adminuser"  # Имя пользователя для SSH
+  }
+  
   
   os_disk {
     caching              = "ReadWrite"
