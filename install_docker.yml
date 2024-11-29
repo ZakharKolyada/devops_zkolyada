@@ -1,6 +1,6 @@
 ---
 - name: Install Docker on Ubuntu
-  hosts: "{{ target_hosts }}"
+  hosts: all
   tasks:
     - name: Update apt repository
       apt:
