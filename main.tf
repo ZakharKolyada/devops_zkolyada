@@ -107,7 +107,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   disable_password_authentication = true
   admin_ssh_key {
     username   = "adminuser"  # Имя пользователя для подключения
-    public_key = file("${path.module}/id.rsa")
+    public_key = file("${path.module}/id.rsa.pub")
   }
   
   
