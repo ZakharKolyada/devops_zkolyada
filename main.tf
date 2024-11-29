@@ -43,7 +43,7 @@ resource "azurerm_network_security_group" "nsg" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
-#ssh 
+  # ssh 
   security_rule {
     name                       = "SSH"
     priority                   = 1001
@@ -63,7 +63,7 @@ resource "azurerm_subnet_network_security_group_association" "subnet_nsg_associa
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
-# Асоціація підмережі 1 з групою безпеки
+# Асоціація підмережі 2 з групою безпеки
 resource "azurerm_subnet_network_security_group_association" "subnet_nsg_association2" {
   subnet_id                 = azurerm_subnet.subnet2.id
   network_security_group_id = azurerm_network_security_group.nsg.id
@@ -87,7 +87,7 @@ resource "azurerm_network_interface" "nic" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = azurerm_subnet.subnet1.id
+    subnet_id                     = azurerm_subnet["subnet${count.index + 1}"].id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.pip[count.index].id
   }
@@ -102,14 +102,13 @@ resource "azurerm_linux_virtual_machine" "vm" {
   size                  = "Standard_B1s"
   admin_username        = "adminuser"
   network_interface_ids = [azurerm_network_interface.nic[count.index].id]
-  
-# Указываем путь к приватному ключу
+
+  # Указываем путь к приватному ключу
   disable_password_authentication = true
   admin_ssh_key {
     username   = "adminuser"  # Имя пользователя для подключения
-    public_key = file("${path.module}/id.rsa.pub")
+    public_key = file("${path.module}/ssh/id.rsa.pub")  # Указываем путь к публичному ключу
   }
-  
   
   os_disk {
     caching              = "ReadWrite"
@@ -122,4 +121,8 @@ resource "azurerm_linux_virtual_machine" "vm" {
     sku       = "22_04-lts"
     version   = "latest"
   }
+}
+
+output "public_ip_addresses" {
+  value = azurerm_public_ip.pip[*].ip_address
 }
