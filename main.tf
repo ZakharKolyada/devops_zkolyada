@@ -87,11 +87,12 @@ resource "azurerm_network_interface" "nic" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = azurerm_subnet["subnet${count.index + 1}"].id
+    subnet_id                     = count.index == 0 ? azurerm_subnet.subnet1.id : azurerm_subnet.subnet2.id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.pip[count.index].id
   }
 }
+
 
 resource "azurerm_linux_virtual_machine" "vm" {
   count                 = 2
@@ -116,8 +117,4 @@ resource "azurerm_linux_virtual_machine" "vm" {
     sku       = "22_04-lts"
     version   = "latest"
   }
-}
-
-output "public_ip_addresses" {
-  value = azurerm_public_ip.pip[*].ip_address
 }
