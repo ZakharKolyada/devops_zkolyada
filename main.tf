@@ -93,7 +93,6 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
-# Створення віртуальних машин
 resource "azurerm_linux_virtual_machine" "vm" {
   count                 = 2
   name                  = "terrafrom-lesson-vm-${count.index}"
@@ -101,14 +100,10 @@ resource "azurerm_linux_virtual_machine" "vm" {
   resource_group_name   = azurerm_resource_group.rg.name
   size                  = "Standard_B1s"
   admin_username        = "adminuser"
+  admin_password = "YourSecurePassword123!"
   network_interface_ids = [azurerm_network_interface.nic[count.index].id]
-
-  # Указываем путь к приватному ключу
-  disable_password_authentication = true
-  admin_ssh_key {
-    username   = "adminuser"  # Имя пользователя для подключения
-    public_key = file("${path.module}/ssh/id.rsa.pub")  # Указываем путь к публичному ключу
-  }
+  
+  disable_password_authentication = false
   
   os_disk {
     caching              = "ReadWrite"
